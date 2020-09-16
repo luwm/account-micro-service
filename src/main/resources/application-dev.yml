@@ -1,0 +1,8 @@
+spring:
+  jpa:
+    show-sql: true
+server:
+  port: 8082
+
+services:
+  account-service-endpoint: http://localhost:8082

@@ -1,0 +1,20 @@
+# application.yml
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: account-service
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3307/account?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 123456
+    tomcat:
+      test-while-idle: true
+      validation-query: SELECT 1
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    jpa:
+      show-sql: true
+
