@@ -6,7 +6,7 @@ spring:
   application:
     name: account-service
   datasource:
-    url: jdbc:mysql://127.0.0.1:3307/account?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://sushehost:3307/staffjoy_account?useUnicode=true&characterEncoding=utf-8
     username: root
     password: 123456
     tomcat:
@@ -18,3 +18,6 @@ spring:
     jpa:
       show-sql: true
 
+account:
+  access-token: YOUR_ACCESS_TOKEN
+  access-key: YOUR_ACCESS_KEY

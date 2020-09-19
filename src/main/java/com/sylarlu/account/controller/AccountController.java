@@ -1,6 +1,7 @@
 package com.sylarlu.account.controller;
 
-import com.sylarlu.account.dto.*;
+import com.sylarlu.account.auth.AuthConstant;
+import com.sylarlu.account.auth.Authorize;
 import com.sylarlu.account.dto.*;
 import com.sylarlu.account.service.AccountService;
 import com.sylarlu.account.validation.PhoneNumber;
@@ -22,7 +23,11 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping(path="/hello")
+    @Authorize(value = {
+            AuthConstant.AUTHORIZATION_AUTHENTICATED_USER
+    })
     public GenericAccountResponse Hello(@RequestParam String phoneNumber){
+        logger.info("Hello!!"+phoneNumber);
         AccountDto account =  accountService.getAccountByPhoneNumber(phoneNumber);
         return (new GenericAccountResponse(account));
     }
@@ -35,6 +40,7 @@ public class AccountController {
     @GetMapping(path="/test")
     public String Test(@RequestParam("phoneNumber") String phoneNumber){
         logger.info("Hello world!!"+phoneNumber);
+        accountService.getAppProps();
         return "Hello world!!"+phoneNumber;
     }
 

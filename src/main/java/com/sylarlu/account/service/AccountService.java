@@ -5,9 +5,11 @@ import com.sylarlu.account.dto.AccountDto;
 import com.sylarlu.account.dto.AccountList;
 import com.sylarlu.account.error.ServiceException;
 import com.sylarlu.account.model.Account;
+import com.sylarlu.account.props.AppProps;
 import com.sylarlu.account.repo.AccountRepo;
 import com.github.structlog4j.ILogger;
 import com.github.structlog4j.SLoggerFactory;
+import com.sylarlu.account.service.helper.ServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,10 @@ public class AccountService {
 
     private final AccountClient accountClient;
 
+    private final ServiceHelper serviceHelper;
+
+    private final AppProps appProps;
+
     public AccountDto getAccountByPhoneNumber(String phoneNumber){
         Account account = accountRepo.findAccountByPhoneNumber(phoneNumber);
         if (account == null) {
@@ -39,7 +45,16 @@ public class AccountService {
             throw new ServiceException(phoneNumber);
         }
         accountClient.Test(phoneNumber);
+        logger.info("getAccountByPhoneNumber 1");
+        serviceHelper.aSyncTest(account.getId());
+        logger.info("getAccountByPhoneNumber 2");
         return this.convertToDto(account);
+    }
+
+    public String getAppProps(){
+        logger.info(appProps.getAccessKey());
+        logger.info(appProps.getAccessToken());
+        return appProps.getAccessKey() + "/n" + appProps.getAccessToken();
     }
 
     public AccountList list(int page, int limit){

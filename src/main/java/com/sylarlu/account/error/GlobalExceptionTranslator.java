@@ -4,6 +4,7 @@ import com.sylarlu.account.api.BaseResponse;
 import com.sylarlu.account.api.ResultCode;
 import com.github.structlog4j.ILogger;
 import com.github.structlog4j.SLoggerFactory;
+import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.Set;
 
 //import org.hibernate.validator.internal.engine.path.PathImpl;
 @RestControllerAdvice
@@ -70,19 +75,19 @@ public class GlobalExceptionTranslator {
                 .build();
     }
 
-//    @ExceptionHandler(ConstraintViolationException.class)
-//    public BaseResponse handleError(ConstraintViolationException e) {
-//        logger.warn("Constraint Violation", e);
-//        Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
-//        ConstraintViolation<?> violation = violations.iterator().next();
-//        String path = ((PathImpl) violation.getPropertyPath()).getLeafNode().getName();
-//        String message = String.format("%s:%s", path, violation.getMessage());
-//        return BaseResponse
-//                .builder()
-//                .code(ResultCode.PARAM_VALID_ERROR)
-//                .message(message)
-//                .build();
-//    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    public BaseResponse handleError(ConstraintViolationException e) {
+        logger.warn("Constraint Violation", e);
+        Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+        ConstraintViolation<?> violation = violations.iterator().next();
+        String path = ((PathImpl) violation.getPropertyPath()).getLeafNode().getName();
+        String message = String.format("%s:%s", path, violation.getMessage());
+        return BaseResponse
+                .builder()
+                .code(ResultCode.PARAM_VALID_ERROR)
+                .message(message)
+                .build();
+    }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public BaseResponse handleError(NoHandlerFoundException e) {
